@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UA Client Controls", "Sampl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpcClientService", "..\..\OpcClientService\OpcClientService.csproj", "{07BE79BF-92F5-4AD6-93AC-8669E6B621F4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestOPCUAClient", "TestOPCUAClient\TestOPCUAClient.csproj", "{315CA4E6-5671-4CB5-A11F-8B097047DE7A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{07BE79BF-92F5-4AD6-93AC-8669E6B621F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07BE79BF-92F5-4AD6-93AC-8669E6B621F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{07BE79BF-92F5-4AD6-93AC-8669E6B621F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{315CA4E6-5671-4CB5-A11F-8B097047DE7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{315CA4E6-5671-4CB5-A11F-8B097047DE7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{315CA4E6-5671-4CB5-A11F-8B097047DE7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{315CA4E6-5671-4CB5-A11F-8B097047DE7A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
