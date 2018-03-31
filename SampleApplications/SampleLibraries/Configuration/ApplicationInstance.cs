@@ -36,7 +36,6 @@ using System.Reflection;
 using System.IO;
 using System.Xml;
 using System.Runtime.Serialization;
-using System.Windows.Forms;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 
@@ -248,7 +247,7 @@ namespace Opc.Ua.Configuration
 
             // update fixed fields in the installation config.
             InstallConfig.ApplicationType = (Opc.Ua.Security.ApplicationType)(int)ApplicationType;
-            InstallConfig.ExecutableFile = Application.ExecutablePath;
+            InstallConfig.ExecutableFile = Assembly.GetExecutingAssembly().FullName;
 
             if (InstallConfig.TraceConfiguration != null)
             {
@@ -995,7 +994,7 @@ namespace Opc.Ua.Configuration
                 bool start = true;
 
                 bool result = Opc.Ua.Configuration.ServiceInstaller.InstallService(
-                    Application.ExecutablePath,
+                    Assembly.GetExecutingAssembly().FullName,
                     InstallConfig.ApplicationName,
                     configuration.ApplicationName,
                     InstallConfig.ServiceDescription,
@@ -1128,7 +1127,7 @@ namespace Opc.Ua.Configuration
                 // warn user.
                 if (!silent)
                 {
-                    ExceptionDlg.Show("Load Application Configuration", e);
+                    Trace.TraceError("Load Application Configuration", e);
                 }
 
                 Utils.Trace(e, "Could not load configuration file. {0}", filePath);
@@ -1363,27 +1362,16 @@ namespace Opc.Ua.Configuration
             // check key size.
             if (minimumKeySize > certificate.PublicKey.Key.KeySize)
             {
-                bool valid = false;
+                bool valid = true;
 
                 string message = Utils.Format(
                     "The key size ({0}) in the certificate is less than the minimum provided ({1}). Update certificate?",
                     certificate.PublicKey.Key.KeySize,
                     minimumKeySize);
 
-                if (!silent)
-                {
-                    if (MessageBox.Show(message, configuration.ApplicationName, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
-                    {
-                        valid = true;
-                    }
-                }
 
                 Utils.Trace(message);
 
-                if (!valid)
-                {
-                    return false;
-                }
             }
 
             // check domains.
@@ -1400,24 +1388,12 @@ namespace Opc.Ua.Configuration
 
             if (String.IsNullOrEmpty(applicationUri))
             {
-                bool valid = false;
+                bool valid = true;
 
                 string message = "The Application URI is not specified in the certificate. Update certificate?";
 
-                if (!silent)
-                {
-                    if (MessageBox.Show(message, configuration.ApplicationName, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
-                    {
-                        valid = true;
-                    }
-                }
 
                 Utils.Trace(message);
-
-                if (!valid)
-                {
-                    return false;
-                }
             }
             
             // update configuration.
@@ -1498,16 +1474,8 @@ namespace Opc.Ua.Configuration
                     "The server is configured to use domain '{0}' which does not appear in the certificate. Update certificate?",
                     serverDomainNames[ii]);
 
-                valid = false;
+                valid = true;
 
-                if (!silent)
-                {
-                    if (MessageBox.Show(message, configuration.ApplicationName, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
-                    {
-                        valid = true;
-                        continue;
-                    }
-                }
 
                 Utils.Trace(message);
                 break;
@@ -1544,7 +1512,7 @@ namespace Opc.Ua.Configuration
             {
                 try
                 {
-                    ConfigUtils.RemoveFirewallAccess(Application.ExecutablePath, baseAddresses);
+                    ConfigUtils.RemoveFirewallAccess(Assembly.GetExecutingAssembly().FullName, baseAddresses);
                 }
                 catch (Exception e)
                 {
@@ -1558,23 +1526,19 @@ namespace Opc.Ua.Configuration
             try
             {
                 // check if firewall needs configuration.
-                if (!ConfigUtils.CheckFirewallAccess(Application.ExecutablePath, baseAddresses))
+                if (!ConfigUtils.CheckFirewallAccess(Assembly.GetExecutingAssembly().FullName, baseAddresses))
                 {
                     bool configure = true;
 
                     if (!silent)
                     {
                         string message = "The firewall has not been configured to allow external access to the server. Configure firewall?";
-
-                        if (MessageBox.Show(message, configuration.ApplicationName, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
-                        {
-                            configure = false;
-                        }
+                        Trace.TraceWarning(message);
                     }
 
                     if (configure)
                     {
-                        ConfigUtils.SetFirewallAccess(configuration.ApplicationName, Application.ExecutablePath, baseAddresses);
+                        ConfigUtils.SetFirewallAccess(configuration.ApplicationName, Assembly.GetExecutingAssembly().FullName, baseAddresses);
                     }
                 }
             }

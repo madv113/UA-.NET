@@ -77,7 +77,6 @@
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.ServiceProcess" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -85,12 +84,6 @@
     <Compile Include="ApplicationInstance.cs" />
     <Compile Include="ConfigUtils.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ExceptionDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ExceptionDlg.Designer.cs">
-      <DependentUpon>ExceptionDlg.cs</DependentUpon>
     </Compile>
     <Compile Include="HostEnumerator.cs" />
     <Compile Include="Enum.cs" />
@@ -140,12 +133,6 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ExceptionDlg.resx">
-      <DependentUpon>ExceptionDlg.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Stack\Core\UA Core Library.csproj">
