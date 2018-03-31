@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SampleLibraries", "SampleLibraries", "{79EADC28-EB76-4A1E-879E-26AB8FDAF360}"
 EndProject
@@ -18,6 +18,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UA Client Library", "SampleApplications\SampleLibraries\Client\UA Client Library.csproj", "{42E9198C-ED2C-4BC8-B0A1-55D91D8F1E90}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UA Client Controls", "SampleApplications\SampleLibraries\Controls\UA Client Controls.csproj", "{A247D2EE-14FC-463D-A9BA-6CFF1EF22B7A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpcClientService", "..\..\OpcClientService\OpcClientService.csproj", "{07BE79BF-92F5-4AD6-93AC-8669E6B621F4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,14 +51,18 @@ Global
 		{A247D2EE-14FC-463D-A9BA-6CFF1EF22B7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A247D2EE-14FC-463D-A9BA-6CFF1EF22B7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A247D2EE-14FC-463D-A9BA-6CFF1EF22B7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07BE79BF-92F5-4AD6-93AC-8669E6B621F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07BE79BF-92F5-4AD6-93AC-8669E6B621F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07BE79BF-92F5-4AD6-93AC-8669E6B621F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07BE79BF-92F5-4AD6-93AC-8669E6B621F4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{7543AFCB-F5AF-44AF-83C9-23164474C1E9} = {3B26E839-E086-4822-BBC0-DA6208581A70}
 		{8AB4CB8E-E216-425D-B600-350D0B6B59CD} = {79EADC28-EB76-4A1E-879E-26AB8FDAF360}
 		{42E9198C-ED2C-4BC8-B0A1-55D91D8F1E90} = {79EADC28-EB76-4A1E-879E-26AB8FDAF360}
 		{A247D2EE-14FC-463D-A9BA-6CFF1EF22B7A} = {79EADC28-EB76-4A1E-879E-26AB8FDAF360}
-		{7543AFCB-F5AF-44AF-83C9-23164474C1E9} = {3B26E839-E086-4822-BBC0-DA6208581A70}
 	EndGlobalSection
 EndGlobal

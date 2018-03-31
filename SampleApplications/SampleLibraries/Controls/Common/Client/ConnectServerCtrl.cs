@@ -37,13 +37,14 @@ using System.Windows.Forms;
 using System.Security.Cryptography.X509Certificates;
 using Opc.Ua;
 using Opc.Ua.Client;
+using System.Diagnostics;
 
 namespace Opc.Ua.Client.Controls
 {
     /// <summary>
     /// A tool bar used to connect to a server.
     /// </summary>
-    public partial class ConnectServerCtrl : UserControl
+    public partial class ConnectServerCtrl : IDisposable
     {
         #region Constructors
         /// <summary>
@@ -51,7 +52,6 @@ namespace Opc.Ua.Client.Controls
         /// </summary>
         public ConnectServerCtrl()
         {
-            InitializeComponent();
             m_CertificateValidation = new CertificateValidationEventHandler(CertificateValidator_CertificateValidation);
         }
         #endregion
@@ -66,45 +66,12 @@ namespace Opc.Ua.Client.Controls
         private EventHandler m_ReconnectStarting;
         private EventHandler m_KeepAliveComplete;
         private EventHandler m_ConnectComplete;
-        private StatusStrip m_StatusStrip;
-        private ToolStripItem m_ServerStatusLB;
-        private ToolStripItem m_StatusUpateTimeLB;
         #endregion
 
         #region Public Members
         /// <summary>
         /// A strip used to display session status information.
         /// </summary>
-        public StatusStrip StatusStrip
-        {
-            get { return m_StatusStrip; }
-            
-            set 
-            { 
-                if (!Object.ReferenceEquals(m_StatusStrip, value))
-                {
-                    m_StatusStrip = value;
-
-                    if (value != null)
-                    {
-                        m_ServerStatusLB = new ToolStripStatusLabel();
-                        m_StatusUpateTimeLB = new ToolStripStatusLabel();
-                        m_StatusStrip.Items.Add(m_ServerStatusLB);
-                        m_StatusStrip.Items.Add(m_StatusUpateTimeLB);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// A control that contains the last time a keep alive was returned from the server.
-        /// </summary>
-        public ToolStripItem ServerStatusControl { get { return m_ServerStatusLB; } set { m_ServerStatusLB = value; } }
-
-        /// <summary>
-        /// A control that contains the last time a keep alive was returned from the server.
-        /// </summary>
-        public ToolStripItem StatusUpateTimeControl { get { return m_StatusUpateTimeLB; } set { m_StatusUpateTimeLB = value; } }
             
         /// <summary>
         /// The name of the session to create.
@@ -119,33 +86,12 @@ namespace Opc.Ua.Client.Controls
         /// <summary>
         /// The URL displayed in the control.
         /// </summary>
-        public string ServerUrl
-        {
-            get 
-            {
-                if (UrlCB.SelectedIndex >= 0)
-                {
-                    return (string)UrlCB.SelectedItem;
-                }
-
-                return UrlCB.Text; 
-            }
-
-            set
-            {
-                UrlCB.SelectedIndex = -1;
-                UrlCB.Text = value;
-            }
-        }
+        public string ServerUrl { get; set; }
 
         /// <summary>
         /// Whether to use security when connecting.
         /// </summary>
-        public bool UseSecurity
-        {
-            get { return UseSecurityCK.Checked; }
-            set { UseSecurityCK.Checked = value; }
-        }
+        public bool UseSecurity { get; set; }
 
         /// <summary>
         /// The locales to use when creating the session.
@@ -237,34 +183,6 @@ namespace Opc.Ua.Client.Controls
             remove { m_ConnectComplete -= value; }
         }
 
-        /// <summary>
-        /// Sets the URLs shown in the control.
-        /// </summary>
-        public void SetAvailableUrls(IList<string> urls)
-        {
-            UrlCB.Items.Clear();
-
-            if (urls != null)
-            {
-                foreach (string url in urls)
-                {
-                    int index = url.LastIndexOf("/discovery", StringComparison.InvariantCultureIgnoreCase);
-
-                    if (index != -1)
-                    {
-                        UrlCB.Items.Add(url.Substring(0, index));
-                        continue;
-                    }
-
-                    UrlCB.Items.Add(url);
-                }
-
-                if (UrlCB.Items.Count > 0)
-                {
-                    UrlCB.SelectedIndex = 0;
-                }
-            }
-        }
                 
         /// <summary>
         /// Creates a new session.
@@ -276,12 +194,8 @@ namespace Opc.Ua.Client.Controls
             Disconnect();
 
             // determine the URL that was selected.
-            string serverUrl = UrlCB.Text;
+            string serverUrl = ServerUrl;
 
-            if (UrlCB.SelectedIndex >= 0)
-            {
-                serverUrl = (string)UrlCB.SelectedItem;
-            }
 
             if (m_configuration == null)
             {
@@ -289,7 +203,7 @@ namespace Opc.Ua.Client.Controls
             }
 
             // select the best endpoint.
-            EndpointDescription endpointDescription = ClientUtils.SelectEndpoint(serverUrl, UseSecurityCK.Checked);
+            EndpointDescription endpointDescription = ClientUtils.SelectEndpoint(serverUrl, UseSecurity);
 
             EndpointConfiguration endpointConfiguration = EndpointConfiguration.Create(m_configuration);
             ConfiguredEndpoint endpoint = new ConfiguredEndpoint(null, endpointDescription, endpointConfiguration);
@@ -322,8 +236,8 @@ namespace Opc.Ua.Client.Controls
         /// <returns>The new session object.</returns>
         public Session Connect(string serverUrl, bool useSecurity)
         {
-            UrlCB.Text = serverUrl;
-            UseSecurityCK.Checked = useSecurity;
+            ServerUrl = serverUrl;
+            UseSecurity = useSecurity;
             return Connect();
         }
 
@@ -372,43 +286,9 @@ namespace Opc.Ua.Client.Controls
         /// </summary>
         private void DoConnectComplete(object state)
         {
-            if (m_ConnectComplete != null)
-            {
-                if (this.InvokeRequired)
-                {
-                    this.BeginInvoke(new System.Threading.WaitCallback(DoConnectComplete), state);
-                    return;
-                }
-
-                m_ConnectComplete(this, null);
-            }
+            m_ConnectComplete?.Invoke(this, null);
         }
 
-        /// <summary>
-        /// Finds the endpoint that best matches the current settings.
-        /// </summary>
-        private EndpointDescription SelectEndpoint()
-        {
-            try
-            {
-                Cursor = Cursors.WaitCursor;
-
-                // determine the URL that was selected.
-                string discoveryUrl = UrlCB.Text;
-
-                if (UrlCB.SelectedIndex >= 0)
-                {
-                    discoveryUrl = (string)UrlCB.SelectedItem;
-                }
-
-                // return the selected endpoint.
-                return ClientUtils.SelectEndpoint(discoveryUrl, UseSecurityCK.Checked);
-            }
-            finally
-            {
-                Cursor = Cursors.Default;
-            }
-        }
         #endregion
 
         #region Event Handlers
@@ -421,17 +301,6 @@ namespace Opc.Ua.Client.Controls
         /// <param name="args">Arguments used to format the status message.</param>
         private void UpdateStatus(bool error, DateTime time, string status, params object[] args)
         {
-            if (m_ServerStatusLB != null)
-            {
-                m_ServerStatusLB.Text = String.Format(status, args);
-                m_ServerStatusLB.ForeColor = (error) ? Color.Red : Color.Empty;
-            }
-
-            if (m_StatusUpateTimeLB != null)
-            {
-                m_StatusUpateTimeLB.Text = time.ToLocalTime().ToString("hh:mm:ss");
-                m_StatusUpateTimeLB.ForeColor = (error) ? Color.Red : Color.Empty;
-            }
         }
 
         /// <summary>
@@ -439,12 +308,6 @@ namespace Opc.Ua.Client.Controls
         /// </summary>
         private void Session_KeepAlive(Session session, KeepAliveEventArgs e)
         {
-            if (this.InvokeRequired)
-            {
-                this.BeginInvoke(new KeepAliveEventHandler(Session_KeepAlive), session, e);
-                return;
-            }
-
             try
             {
                 // check for events from discarded sessions.
@@ -466,10 +329,7 @@ namespace Opc.Ua.Client.Controls
 
                     if (m_reconnectHandler == null)
                     {
-                        if (m_ReconnectStarting != null)
-                        {
-                            m_ReconnectStarting(this, e);
-                        }
+                        m_ReconnectStarting?.Invoke(this, e);
 
                         m_reconnectHandler = new SessionReconnectHandler();
                         m_reconnectHandler.BeginReconnect(m_session, m_reconnectPeriod * 1000, Server_ReconnectComplete);
@@ -489,36 +349,16 @@ namespace Opc.Ua.Client.Controls
             }
             catch (Exception exception)
             {
-                ClientUtils.HandleException(this.Text, exception);
+                Trace.TraceError(exception.Message);
             }
         }
 
-        /// <summary>
-        /// Handles a click on the connect button.
-        /// </summary>
-        private void Server_ConnectMI_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                Connect();
-            }
-            catch (Exception exception)
-            {
-                ClientUtils.HandleException(this.Text, exception);
-            }
-        }
 
         /// <summary>
         /// Handles a reconnect event complete from the reconnect handler.
         /// </summary>
         private void Server_ReconnectComplete(object sender, EventArgs e)
         {
-            if (this.InvokeRequired)
-            {
-                this.BeginInvoke(new EventHandler(Server_ReconnectComplete), sender, e);
-                return;
-            }
-
             try
             {
                 // ignore callbacks from discarded objects.
@@ -539,7 +379,7 @@ namespace Opc.Ua.Client.Controls
             }
             catch (Exception exception)
             {
-                ClientUtils.HandleException(this.Text, exception);
+                Trace.TraceError(exception.Message);
             }
         }
 
@@ -548,12 +388,6 @@ namespace Opc.Ua.Client.Controls
         /// </summary>
         private void CertificateValidator_CertificateValidation(CertificateValidator sender, CertificateValidationEventArgs e)
         {
-            if (this.InvokeRequired)
-            {
-                this.Invoke(new CertificateValidationEventHandler(CertificateValidator_CertificateValidation), sender, e);
-                return;
-            }
-
             try
             {
                 e.Accept = m_configuration.SecurityConfiguration.AutoAcceptUntrustedCertificates;
@@ -571,9 +405,14 @@ namespace Opc.Ua.Client.Controls
             }
             catch (Exception exception)
             {
-                ClientUtils.HandleException(this.Text, exception);
+                Trace.TraceError(exception.Message);
             }
         }
         #endregion
+
+        public void Dispose()
+        {
+            Disconnect();
+        }
     }
 }
