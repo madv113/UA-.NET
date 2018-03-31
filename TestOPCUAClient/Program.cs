@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Opc.Ua;
 using Opc.Ua.Client;
-using Siemens.OPUAClient;
+using Madv113.OPUAClient;
 
 namespace TestOPCUAClient
 {

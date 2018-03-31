@@ -4,17 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{315CA4E6-5671-4CB5-A11F-8B097047DE7A}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{07BE79BF-92F5-4AD6-93AC-8669E6B621F4}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TestOPCUAClient</RootNamespace>
-    <AssemblyName>TestOPCUAClient</AssemblyName>
+    <RootNamespace>OpcClientService</RootNamespace>
+    <AssemblyName>OpcClientService</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -24,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -43,27 +40,32 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="ClientAsService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\OpcClientService\OpcClientService.csproj">
-      <Project>{07be79bf-92f5-4ad6-93ac-8669e6b621f4}</Project>
-      <Name>OpcClientService</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SampleApplications\SampleLibraries\Client\UA Client Library.csproj">
-      <Project>{42E9198C-ED2C-4BC8-B0A1-55D91D8F1E90}</Project>
+      <Project>{42e9198c-ed2c-4bc8-b0a1-55d91d8f1e90}</Project>
       <Name>UA Client Library</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SampleApplications\SampleLibraries\Configuration\UA Configuration Library.csproj">
+      <Project>{8ab4cb8e-e216-425d-b600-350d0b6b59cd}</Project>
+      <Name>UA Configuration Library</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SampleApplications\SampleLibraries\Controls\UA Client Controls.csproj">
+      <Project>{a247d2ee-14fc-463d-a9ba-6cff1ef22b7a}</Project>
+      <Name>UA Client Controls</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Stack\Core\UA Core Library.csproj">
-      <Project>{7543AFCB-F5AF-44AF-83C9-23164474C1E9}</Project>
+      <Project>{7543afcb-f5af-44af-83c9-23164474c1e9}</Project>
       <Name>UA Core Library</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
