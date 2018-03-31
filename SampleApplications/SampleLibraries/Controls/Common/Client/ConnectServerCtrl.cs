@@ -33,7 +33,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Data;
 using System.Text;
-using System.Windows.Forms;
 using System.Security.Cryptography.X509Certificates;
 using Opc.Ua;
 using Opc.Ua.Client;
@@ -266,18 +265,6 @@ namespace Opc.Ua.Client.Controls
             DoConnectComplete(null);
         }
 
-        /// <summary>
-        /// Prompts the user to choose a server on another host.
-        /// </summary>
-        public void Discover(string hostName)
-        {
-            string endpointUrl = new DiscoverServerDlg().ShowDialog(m_configuration, hostName);
-
-            if (endpointUrl != null)
-            {
-                ServerUrl = endpointUrl;
-            }
-        }
         #endregion
 
         #region Private Methods
@@ -391,17 +378,6 @@ namespace Opc.Ua.Client.Controls
             try
             {
                 e.Accept = m_configuration.SecurityConfiguration.AutoAcceptUntrustedCertificates;
-
-                if (!m_configuration.SecurityConfiguration.AutoAcceptUntrustedCertificates)
-                {
-                    DialogResult result = MessageBox.Show(
-                        e.Certificate.Subject,
-                        "Untrusted Certificate",
-                        MessageBoxButtons.YesNo,
-                        MessageBoxIcon.Warning);
-
-                    e.Accept = (result == DialogResult.Yes);
-                }
             }
             catch (Exception exception)
             {

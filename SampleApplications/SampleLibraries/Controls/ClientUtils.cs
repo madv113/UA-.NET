@@ -40,13 +40,6 @@ namespace Opc.Ua.Client.Controls
     /// </summary>
     public partial class ClientUtils
     {
-        /// <summary>
-        /// Handles an exception.
-        /// </summary>
-        public static void HandleException(string caption, Exception e)
-        {
-            Opc.Ua.Configuration.ExceptionDlg.Show(caption, e);
-        }
 
         /// <summary>
         /// Returns the application icon.
