@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Content Include="TestScriptFOrUnity\OpcUAClient.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
