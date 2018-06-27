@@ -7,12 +7,14 @@ using System.Threading.Tasks;
 using Opc.Ua;
 using Opc.Ua.Client;
 using Madv113.OPUAClient;
+using Opc.Ua.Configuration;
 
 namespace TestOPCUAClient
 {
     class Program
     {
         private static ClientAsService opcuaClient;
+        private static ApplicationInstance applicationInstance;
         private static ApplicationConfiguration config = new ApplicationConfiguration();
         private static Task writer;
         private static ManualResetEvent stop = new ManualResetEvent(false);
@@ -20,6 +22,11 @@ namespace TestOPCUAClient
         static void Main(string[] args)
         {
             SetupOpcConfiguration();
+
+            applicationInstance = new ApplicationInstance(config);
+            applicationInstance.CheckApplicationInstanceCertificate(false,128);
+
+
             opcuaClient = new ClientAsService(ServerType.ServerA, config, "opc.tcp://localhost:51210/UA/SampleServer");
             opcuaClient.ConnectionStateChanged += OpcuaClient_ConnectionStateChanged;
             opcuaClient.Connect();
@@ -194,7 +201,7 @@ namespace TestOPCUAClient
             config.SecurityConfiguration.ApplicationCertificate = new CertificateIdentifier();
             config.SecurityConfiguration.ApplicationCertificate.StoreType = "Directory";
             config.SecurityConfiguration.ApplicationCertificate.StorePath = @"%CommonApplicationData%\OPC Foundation\CertificateStores\MachineDefault";
-            config.SecurityConfiguration.ApplicationCertificate.SubjectName = "VaarseinClient";
+            config.SecurityConfiguration.ApplicationCertificate.SubjectName = "UnityClient";
             config.SecurityConfiguration.TrustedPeerCertificates = new CertificateTrustList();
             config.SecurityConfiguration.TrustedPeerCertificates.StoreType = "Directory";
             config.SecurityConfiguration.TrustedPeerCertificates.StorePath = @"%CommonApplicationData%\OPC Foundation\CertificateStores\UA Applications";
